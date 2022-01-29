@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Serenity (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Serenity (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
