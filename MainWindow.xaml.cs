@@ -1,36 +1,44 @@
 ﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using Serenity.Views;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace Serenity
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
+
     public sealed partial class MainWindow : Window
     {
         public MainWindow()
         {
             this.InitializeComponent();
         }
-
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        
+        /// <summary>
+        /// List of navigatable pages with a tag for binding.
+        /// </summary>
+        private readonly List<(string Tag, Type Page)> pages = new()
         {
-            myButton.Content = "Clicked";
+            ("GeneralSettings", typeof(GeneralSettingsView)),
+        };
+
+        private void MainNav_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainNav.SelectedItem = MainNav.MenuItems[0];
+            MainNav_Navigate("GeneralSettings", new EntranceNavigationTransitionInfo());
+        }
+
+        private void MainNav_Navigate(string navItemTag, NavigationTransitionInfo transitionInfo)
+        {
+            Type page = pages.FirstOrDefault(p => p.Tag.Equals(navItemTag)).Page;
+            var currentPageType = ContentFrame.CurrentSourcePageType;
+
+            // Only navigate if the selected page isn't currently loaded.
+            if (page is not null && !Type.Equals(currentPageType, page))
+            {
+                ContentFrame.Navigate(page, null, transitionInfo);
+            }
         }
     }
 }
